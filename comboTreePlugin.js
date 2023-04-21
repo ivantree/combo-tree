@@ -133,18 +133,18 @@
 
   ComboTree.prototype.createSourceItemHTML = function (sourceItem) {
     var itemHtml = "",
-      isThereSubs = sourceItem.hasOwnProperty("subs"),
+      isThereChildren = sourceItem.hasOwnProperty("children"),
         collapse = sourceItem.hasOwnProperty("collapse") ? sourceItem.hasOwnProperty("collapse") : false;
     let isSelectable = (sourceItem.isSelectable === undefined ? true : sourceItem.isSelectable);
-    let selectableClass = (isSelectable || isThereSubs) ? 'selectable' : 'not-selectable';
+    let selectableClass = (isSelectable || isThereChildren) ? 'selectable' : 'not-selectable';
     if (this.options.isolatedSelectable) {
       selectableClass = isSelectable ? 'selectable' : 'not-selectable';
     }
-    let selectableLastNode = (this.options.selectableLastNode !== undefined && isThereSubs) ? this.options.selectableLastNode : false;
+    let selectableLastNode = (this.options.selectableLastNode !== undefined && isThereChildren) ? this.options.selectableLastNode : false;
 
-    itemHtml += '<LI id="' + this.comboTreeId + 'Li' + sourceItem.id + '" class="ComboTreeItem' + (isThereSubs?'Parent':'Chlid') + '"> ';
+    itemHtml += '<LI id="' + this.comboTreeId + 'Li' + sourceItem.id + '" class="ComboTreeItem' + (isThereChildren?'Parent':'Chlid') + '"> ';
 
-    if (isThereSubs)
+    if (isThereChildren)
       itemHtml += '<span class="comboTreeParentPlus">' + (this.options.collapse || collapse ? '<span class="mdi mdi-chevron-right-circle-outline"></span>' : '<span class="mdi mdi-chevron-down-circle-outline"></span>') + '</span>'; // itemHtml += '<span class="comboTreeParentPlus">' + (this.options.collapse ? '+' : '&minus;') + '</span>';
 
     if (this.options.isMultiple)
@@ -152,8 +152,8 @@
     else
       itemHtml += '<span data-id="' + sourceItem.id + '" data-selectable="' + isSelectable + '" class="comboTreeItemTitle ' + selectableClass + '">' + sourceItem.title + '</span>';
 
-    if (isThereSubs)
-      itemHtml += this.createSourceSubItemsHTML(sourceItem.subs, sourceItem.id, collapse);
+    if (isThereChildren)
+      itemHtml += this.createSourceSubItemsHTML(sourceItem.children, sourceItem.id, collapse);
 
     itemHtml += '</LI>';
     return itemHtml;
@@ -406,8 +406,8 @@
       if (item.id == arr[i].id && item.title == arr[i].title)
         return i + "";
 
-      if (arr[i].hasOwnProperty("subs")) {
-        let found = this.isItemInArray(item, arr[i].subs);
+      if (arr[i].hasOwnProperty("children")) {
+        let found = this.isItemInArray(item, arr[i].children);
         if (found)
           return found;
       }
@@ -534,8 +534,8 @@
       for (let i=0; i<source.length; i++) {
         if (source[i].id == itemId)
           return {id: source[i].id, title: source[i].title};
-        if (source[i].hasOwnProperty("subs")) {
-          let found = this.findItembyId(itemId, source[i].subs);
+        if (source[i].hasOwnProperty("children")) {
+          let found = this.findItembyId(itemId, source[i].children);
           if (found)
             return found;
         }
